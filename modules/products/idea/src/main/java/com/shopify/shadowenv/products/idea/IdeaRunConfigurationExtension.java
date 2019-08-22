@@ -28,9 +28,12 @@ public class IdeaRunConfigurationExtension extends RunConfigurationExtension {
      */
     @Override
     public <T extends RunConfigurationBase> void updateJavaParameters(T configuration, JavaParameters params, RunnerSettings runnerSettings) throws ExecutionException {
+        String workingDirectory = getWorkingDirectory(configuration, params);
+        if (workingDirectory == null) return;
+
         Map<String, String> sourceEnv = getSourceEnv(params);
         try {
-            JsonObject evs = getJsonEnv(params.getWorkingDirectory());
+            JsonObject evs = getJsonEnv(workingDirectory);
             for (Map.Entry<String, JsonElement> e : evs.entrySet()) {
                 sourceEnv.put(e.getKey(), e.getValue().getAsString());
             }
@@ -86,6 +89,16 @@ public class IdeaRunConfigurationExtension extends RunConfigurationExtension {
                 params.isPassParentEnvs() ? GeneralCommandLine.ParentEnvironmentType.CONSOLE : GeneralCommandLine.ParentEnvironmentType.NONE
             )
             .getEffectiveEnvironment();
+    }
+
+    @Nullable
+    private <T extends RunConfigurationBase> String getWorkingDirectory(T configuration, JavaParameters params) {
+        String workingDirectory = params.getWorkingDirectory();
+        if (workingDirectory != null) {
+            return workingDirectory;
+        }
+
+        return configuration.getProject().getBasePath();
     }
 
     @Override
