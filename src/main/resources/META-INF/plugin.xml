@@ -1,6 +1,6 @@
 <idea-plugin>
-  <id>net.ashald.envfile</id>
-  <name>EnvFile</name>
+  <id>com.shopify.shadowenv</id>
+  <name>shadowenv</name>
   <version>3.2.0</version>
   <vendor email="envfile@ashald.net">Borys Pierov</vendor>
 
@@ -55,26 +55,11 @@
   <idea-version since-build="181"/>
 
   <depends>com.intellij.modules.lang</depends>
-
-  <extensionPoints>
-    <extensionPoint name="envVarsProvider" beanClass="net.ashald.envfile.platform.EnvVarsProviderExtension">
-      <with attribute="factory" implements="net.ashald.envfile.EnvVarsProviderFactory"/>
-    </extensionPoint>
-  </extensionPoints>
-
-  <extensions defaultExtensionNs="net.ashald.envfile">
-    <envVarsProvider id="env" factory="net.ashald.envfile.providers.dotenv.DotEnvFileParserFactory"/>
-    <envVarsProvider id="yaml" factory="net.ashald.envfile.providers.yaml.YamlEnvFileParserFactory"/>
-    <envVarsProvider id="runconfig" factory="net.ashald.envfile.providers.runconfig.RunConfigEnvVarsProviderFactory"/>
-  </extensions>
-
-  <extensions defaultExtensionNs="com.intellij">
-    <fileTypeFactory implementation="net.ashald.envfile.platform.EnvFileTypeFactory"/>
-  </extensions>
+  <depends>com.intellij.modules.java</depends>
 
   <depends optional="true" config-file="envfile-idea.xml">com.intellij.modules.lang</depends>
   <depends optional="true" config-file="envfile-pycharm.xml">com.intellij.modules.python</depends>
   <depends optional="true" config-file="envfile-rubymine.xml">com.intellij.modules.ruby</depends>
-  <depends optional="true" config-file="envfile-goland.xml">org.jetbrains.plugins.go</depends>
+<!--  <depends optional="true" config-file="envfile-goland.xml">org.jetbrains.plugins.go</depends>-->
 
 </idea-plugin>

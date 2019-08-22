@@ -1,4 +1,4 @@
-package net.ashald.envfile.products.rubymine;
+package com.shopify.shadowenv.products.rubymine;
 
 import com.intellij.execution.ExecutionException;
 import com.intellij.execution.configurations.GeneralCommandLine;
@@ -6,7 +6,7 @@ import com.intellij.execution.configurations.RunnerSettings;
 import com.intellij.openapi.options.SettingsEditor;
 import com.intellij.openapi.util.InvalidDataException;
 import com.intellij.openapi.util.WriteExternalException;
-import net.ashald.envfile.platform.ui.EnvFileConfigurationEditor;
+import com.shopify.shadowenv.platform.ui.EnvFileConfigurationEditor;
 import org.jdom.Element;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;

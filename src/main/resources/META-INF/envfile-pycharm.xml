@@ -1,5 +1,5 @@
 <idea-plugin version="2">
     <extensions defaultExtensionNs="Pythonid">
-        <runConfigurationExtension implementation="net.ashald.envfile.products.pycharm.PyCharmRunConfigurationExtension" id="envfilePyCharm"/>
+        <runConfigurationExtension implementation="com.shopify.shadowenv.products.pycharm.PyCharmRunConfigurationExtension" id="envfilePyCharm"/>
     </extensions>
 </idea-plugin>

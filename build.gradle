@@ -1,74 +1,46 @@
 plugins {
     id "java"
     id "idea"
-    id "org.jetbrains.intellij" version "0.3.11"
-    id "pl.allegro.tech.build.axion-release" version "1.9.3"
+    id "org.jetbrains.intellij" version "0.4.10"
+//    id "org.jetbrains.plugins.python" version "2019.2.192.6262.58"
+//    id "org.jetbrains.plugins.ruby" version "2019.2.20190815"
+//    id "org.jetbrains.plugins.go" version "92.6262.9.287"
+
 }
 
-group "net.ashald"
+sourceCompatibility = 1.8
 
-scmVersion {
-    tag {
-        prefix = "v"
-        versionSeparator = ""
-    }
-}
+group "com.shopify.dev"
 
 allprojects {
     repositories {
         mavenCentral()
+        maven { url 'http://dl.bintray.com/jetbrains/intellij-plugin-service' }
     }
-    project.version = scmVersion.version
+    project.version = '0.0.1'
 
     ext.jetbrains = [
-            version : "2018.2",
-            pycharm : "PythonCore:2018.2.182.3684.2",
-            rubymine: "org.jetbrains.plugins.ruby:2018.2.20180716",
-            goland  : "org.jetbrains.plugins.go:182.3684.59.834"
+            version : "2019.2",
+            pycharm : "PythonCore:2019.2.192.6262.58",
+            rubymine: "org.jetbrains.plugins.ruby:2019.2.20190815",
+            goland  : "org.jetbrains.plugins.go:92.6262.9.287"
     ]
 }
 
 intellij {
     version jetbrains.version
-    pluginName "EnvFile"
+    pluginName "shadowenv"
+    type "IC"
     sameSinceUntilBuild false
     updateSinceUntilBuild false
+    downloadSources true
+    plugins = ['java']
 }
 
 dependencies {
     compile project(":envfile-products-idea")
-    compile project(":envfile-products-pycharm")
-    compile project(":envfile-products-rubymine")
-    compile project(":envfile-products-goland")
+//    compile project(":envfile-products-pycharm")
+//    compile project(":envfile-products-rubymine")
+//    compile project(":envfile-products-goland")
 }
 
-wrapper {
-    gradleVersion = "4.10.2"
-}
-
-def prj = ".idea/"
-
-idea {
-    module.iml {
-      generateTo = file(prj)
-
-      withXml {
-          it.node.@type = "PLUGIN_MODULE"
-          it.node.appendNode('component', [name: 'DevKit.ModuleBuildProperties', url: 'file://$MODULE_DIR$/src/main/resources/META-INF/plugin.xml'])
-      }
-    }
-}
-
-task setup {
-    dependsOn ideaModule, ideaProject
-    // overriding idea.project.outputFile changes relative path calculation so it's easier to just move a file
-    doLast {
-       copy {
-          from '.'
-          into prj
-          include "${project.name}.ipr"
-          rename { "modules.xml" }
-       }
-       project.delete "${project.name}.ipr"
-     }
-}
