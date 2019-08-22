@@ -28,13 +28,7 @@ public class IdeaRunConfigurationExtension extends RunConfigurationExtension {
      */
     @Override
     public <T extends RunConfigurationBase> void updateJavaParameters(T configuration, JavaParameters params, RunnerSettings runnerSettings) throws ExecutionException {
-        // Borrowed from com.intellij.openapi.projectRoots.JdkUtil
-        Map<String, String> sourceEnv = new GeneralCommandLine()
-            .withEnvironment(params.getEnv())
-            .withParentEnvironmentType(
-                params.isPassParentEnvs() ? GeneralCommandLine.ParentEnvironmentType.CONSOLE : GeneralCommandLine.ParentEnvironmentType.NONE
-            )
-            .getEffectiveEnvironment();
+        Map<String, String> sourceEnv = getSourceEnv(params);
         try {
             JsonObject evs = getJsonEnv(params.getWorkingDirectory());
             for (Map.Entry<String, JsonElement> e : evs.entrySet()) {
@@ -46,8 +40,6 @@ public class IdeaRunConfigurationExtension extends RunConfigurationExtension {
         }
 
         params.setEnv(sourceEnv);
-
-
 
         // The code below works based on assumptions about internal implementation of
         // ExternalSystemExecuteTaskTask and ExternalSystemExecutionSettings and therefore may break any time may it change
@@ -83,6 +75,17 @@ public class IdeaRunConfigurationExtension extends RunConfigurationExtension {
         } catch (IOException e) {
             throw new ExecutionException(e);
         }
+    }
+
+    @NotNull
+    private Map<String, String> getSourceEnv(JavaParameters params) {
+        // Borrowed from com.intellij.openapi.projectRoots.JdkUtil
+        return new GeneralCommandLine()
+            .withEnvironment(params.getEnv())
+            .withParentEnvironmentType(
+                params.isPassParentEnvs() ? GeneralCommandLine.ParentEnvironmentType.CONSOLE : GeneralCommandLine.ParentEnvironmentType.NONE
+            )
+            .getEffectiveEnvironment();
     }
 
     @Override
