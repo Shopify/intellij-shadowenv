@@ -34,10 +34,13 @@ public class IdeaRunConfigurationExtension extends RunConfigurationExtension {
         Map<String, String> sourceEnv = getSourceEnv(params);
         try {
             JsonObject evs = getJsonEnv(workingDirectory);
-            for (Map.Entry<String, JsonElement> e : evs.entrySet()) {
-                sourceEnv.put(e.getKey(), e.getValue().getAsString());
+            for (Map.Entry<String, JsonElement> entry : evs.entrySet()) {
+                if (entry.getValue() == null) {
+                    sourceEnv.remove(entry.getKey());
+                } else {
+                    sourceEnv.put(entry.getKey(), entry.getValue().getAsString());
+                }
             }
-
         } catch (Exception e) {
             throw new ExecutionException(e);
         }
