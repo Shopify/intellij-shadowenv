@@ -12,10 +12,12 @@ import com.intellij.execution.configurations.RunnerSettings;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.externalSystem.service.execution.ExternalSystemRunConfiguration;
 import com.shopify.shadowenv.utils.ReadOnceMap;
+import org.apache.commons.io.IOUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.*;
+import java.nio.charset.Charset;
 import java.util.Map;
 
 public class IdeaRunConfigurationExtension extends RunConfigurationExtension {
@@ -33,39 +35,8 @@ public class IdeaRunConfigurationExtension extends RunConfigurationExtension {
                 params.isPassParentEnvs() ? GeneralCommandLine.ParentEnvironmentType.CONSOLE : GeneralCommandLine.ParentEnvironmentType.NONE
             )
             .getEffectiveEnvironment();
-        ProcessBuilder p = new ProcessBuilder("shadowenv", "hook", "--json", "");
-        p.directory(new File(params.getWorkingDirectory()));
-        BufferedReader er, fr;
-        StringBuilder txt = new StringBuilder();
-        StringBuilder err = new StringBuilder();
-        String line;
         try {
-            Process proc = p.start();
-            fr = new BufferedReader(new InputStreamReader(proc.getInputStream()));
-            er = new BufferedReader(new InputStreamReader(proc.getErrorStream()));
-            while ((line = fr.readLine()) != null) {
-                txt.append(line);
-            }
-            while ((line = er.readLine()) != null) {
-                err.append(line);
-            }
-        } catch (Exception e) {
-            throw new ExecutionException(e);
-        }
-
-        String errTxt = err.toString();
-
-        if (!err.toString().isEmpty()) {
-            if (errTxt.contains("untrusted")) {
-                throw new ExecutionException("untrusted shadowenv program: run shadowenv help trust for more info");
-            } else {
-                throw new ExecutionException(errTxt);
-            }
-        }
-        Logger.getInstance(IdeaRunConfigurationExtension.class).debug("shadowenv output: " + txt.toString());
-        try {
-            JsonObject parsed = new JsonParser().parse(txt.toString()).getAsJsonObject();
-            JsonObject evs = parsed.getAsJsonObject("exported");
+            JsonObject evs = getJsonEnv(params.getWorkingDirectory());
             for (Map.Entry<String, JsonElement> e : evs.entrySet()) {
                 sourceEnv.put(e.getKey(), e.getValue().getAsString());
             }
@@ -85,6 +56,32 @@ public class IdeaRunConfigurationExtension extends RunConfigurationExtension {
             ExternalSystemRunConfiguration ext = (ExternalSystemRunConfiguration) configuration;
 
             ext.getSettings().setEnv(new ReadOnceMap<>(sourceEnv, ext.getSettings().getEnv()));
+        }
+    }
+
+    private JsonObject getJsonEnv(String workingDirectory) throws ExecutionException {
+        try {
+            ProcessBuilder p = new ProcessBuilder("shadowenv", "hook", "--json", "");
+            p.directory(new File(workingDirectory));
+            Process proc = p.start();
+
+            String out = IOUtils.toString(proc.getInputStream(), Charset.defaultCharset());
+            String err = IOUtils.toString(proc.getErrorStream(), Charset.defaultCharset());
+
+            if (!err.isEmpty()) {
+                if (err.contains("untrusted")) {
+                    throw new ExecutionException("untrusted shadowenv program: run shadowenv help trust for more info");
+                } else {
+                    throw new ExecutionException(err);
+                }
+            }
+
+            Logger.getInstance(IdeaRunConfigurationExtension.class).debug("shadowenv output: " + out);
+
+            JsonObject parsed = new JsonParser().parse(out).getAsJsonObject();
+            return parsed.getAsJsonObject("exported");
+        } catch (IOException e) {
+            throw new ExecutionException(e);
         }
     }
 
