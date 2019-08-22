@@ -92,9 +92,4 @@ public class IdeaRunConfigurationExtension extends RunConfigurationExtension {
     public boolean isApplicableFor(@NotNull RunConfigurationBase configuration) {
         return true;
     }
-
-    @Override
-    public boolean isEnabledFor(@NotNull RunConfigurationBase applicableConfiguration, @Nullable RunnerSettings runnerSettings) {
-        return true;
-    }
 }
