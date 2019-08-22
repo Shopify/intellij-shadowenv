@@ -1,6 +1,7 @@
 package com.shopify.shadowenv.products.idea;
 
 import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.intellij.execution.ExecutionException;
 import com.intellij.execution.RunConfigurationExtension;
@@ -26,20 +27,20 @@ public class IdeaRunConfigurationExtension extends RunConfigurationExtension {
     @Override
     public <T extends RunConfigurationBase> void updateJavaParameters(T configuration, JavaParameters params, RunnerSettings runnerSettings) throws ExecutionException {
         // Borrowed from com.intellij.openapi.projectRoots.JdkUtil
-        var sourceEnv = new GeneralCommandLine()
-                .withEnvironment(params.getEnv())
-                .withParentEnvironmentType(
-                        params.isPassParentEnvs() ? GeneralCommandLine.ParentEnvironmentType.CONSOLE : GeneralCommandLine.ParentEnvironmentType.NONE
-                )
-                .getEffectiveEnvironment();
-        var p  = new ProcessBuilder("shadowenv", "hook", "--json", "");
+        Map<String, String> sourceEnv = new GeneralCommandLine()
+            .withEnvironment(params.getEnv())
+            .withParentEnvironmentType(
+                params.isPassParentEnvs() ? GeneralCommandLine.ParentEnvironmentType.CONSOLE : GeneralCommandLine.ParentEnvironmentType.NONE
+            )
+            .getEffectiveEnvironment();
+        ProcessBuilder p = new ProcessBuilder("shadowenv", "hook", "--json", "");
         p.directory(new File(params.getWorkingDirectory()));
         BufferedReader er, fr;
-        var txt = new StringBuilder();
-        var err = new StringBuilder();
+        StringBuilder txt = new StringBuilder();
+        StringBuilder err = new StringBuilder();
         String line;
         try {
-            var proc = p.start();
+            Process proc = p.start();
             fr = new BufferedReader(new InputStreamReader(proc.getInputStream()));
             er = new BufferedReader(new InputStreamReader(proc.getErrorStream()));
             while ((line = fr.readLine()) != null) {
@@ -52,7 +53,7 @@ public class IdeaRunConfigurationExtension extends RunConfigurationExtension {
             throw new ExecutionException(e);
         }
 
-        var errTxt = err.toString();
+        String errTxt = err.toString();
 
         if (!err.toString().isEmpty()) {
             if (errTxt.contains("untrusted")) {
@@ -63,8 +64,8 @@ public class IdeaRunConfigurationExtension extends RunConfigurationExtension {
         }
         Logger.getInstance(IdeaRunConfigurationExtension.class).debug("shadowenv output: " + txt.toString());
         try {
-            var parsed = new JsonParser().parse(txt.toString()).getAsJsonObject();
-            var evs = parsed.getAsJsonObject("exported");
+            JsonObject parsed = new JsonParser().parse(txt.toString()).getAsJsonObject();
+            JsonObject evs = parsed.getAsJsonObject("exported");
             for (Map.Entry<String, JsonElement> e : evs.entrySet()) {
                 sourceEnv.put(e.getKey(), e.getValue().getAsString());
             }
