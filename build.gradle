@@ -2,10 +2,6 @@ plugins {
     id "java"
     id "idea"
     id "org.jetbrains.intellij" version "0.4.10"
-//    id "org.jetbrains.plugins.python" version "2019.2.192.6262.58"
-//    id "org.jetbrains.plugins.ruby" version "2019.2.20190815"
-//    id "org.jetbrains.plugins.go" version "92.6262.9.287"
-
 }
 
 sourceCompatibility = 1.8
@@ -21,9 +17,9 @@ allprojects {
 
     ext.jetbrains = [
             version : "2019.2",
-            pycharm : "PythonCore:2019.2.192.6262.58",
-            rubymine: "org.jetbrains.plugins.ruby:2019.2.20190815",
-            goland  : "org.jetbrains.plugins.go:92.6262.9.287"
+            pycharm : "PythonCore:2019.2.192.5728.98",              // https://plugins.jetbrains.com/plugin/631-python/versions
+            rubymine: "org.jetbrains.plugins.ruby:2019.2.20190718", // https://plugins.jetbrains.com/plugin/1293-ruby/versions
+            goland  : "org.jetbrains.plugins.go:192.5728.86.268"    // https://plugins.jetbrains.com/plugin/9568-go/versions
     ]
 }
 
@@ -39,8 +35,8 @@ intellij {
 
 dependencies {
     compile project(":envfile-products-idea")
-//    compile project(":envfile-products-pycharm")
-//    compile project(":envfile-products-rubymine")
-//    compile project(":envfile-products-goland")
+    compile project(":envfile-products-pycharm")
+    compile project(":envfile-products-rubymine")
+    compile project(":envfile-products-goland")
 }
 

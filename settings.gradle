@@ -4,9 +4,9 @@ include (
         'modules/core',
         'modules/platform',
         'modules/products/idea',
-//        'modules/products/goland',
-//        'modules/products/pycharm',
-//        'modules/products/rubymine',
+        'modules/products/goland',
+        'modules/products/pycharm',
+        'modules/products/rubymine',
 )
 
 rootProject.children.each {

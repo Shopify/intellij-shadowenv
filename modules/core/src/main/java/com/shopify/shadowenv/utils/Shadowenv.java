@@ -5,58 +5,52 @@ import java.io.IOException;
 import java.nio.charset.Charset;
 import java.util.Map;
 
+import com.intellij.execution.ExecutionException;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import org.apache.commons.io.IOUtils;
 
+import java.io.BufferedReader;
+
 public class Shadowenv {
-    public static class ExecutionException extends Exception {
-        ExecutionException(String err) {
-            super(err);
-        }
-
-        ExecutionException(Throwable e) {
-            super(e);
-        }
-    }
-
     public static class UntrustedException extends ExecutionException {
         UntrustedException() {
             super("untrusted shadowenv program: run shadowenv help trust for more info");
         }
     }
 
-    public static void modifyEnv(String dir, Map<String, String> env) throws ExecutionException {
-        JsonObject evs = Shadowenv.getExportedEnv(dir);
-        for (Map.Entry<String, JsonElement> entry : evs.entrySet()) {
-            if (entry.getValue().isJsonNull()) {
-                env.remove(entry.getKey());
-            } else {
-                env.put(entry.getKey(), entry.getValue().getAsString());
-            }
-        }
-    }
-
-    public static JsonObject getExportedEnv(String dir) throws ExecutionException {
+    public static void evaluate(String pwd, Map<String, String> env) throws ExecutionException {
         ProcessBuilder p = new ProcessBuilder("shadowenv", "hook", "--json", "");
-        p.directory(new File(dir));
+        p.directory(new File(pwd));
+        BufferedReader er, fr;
+        String out, err;
         try {
             Process proc = p.start();
-            String out = IOUtils.toString(proc.getInputStream(), Charset.defaultCharset());
-            String err = IOUtils.toString(proc.getErrorStream(), Charset.defaultCharset());
+            out = IOUtils.toString(proc.getInputStream(), Charset.defaultCharset());
+            err = IOUtils.toString(proc.getErrorStream(), Charset.defaultCharset());
+        } catch (Exception e) {
+            throw new ExecutionException(e);
+        }
 
-            if (!err.isEmpty()) {
-                if (err.contains("untrusted")) {
-                    throw new UntrustedException();
+        if (!err.isEmpty()) {
+            if (err.contains("untrusted")) {
+                throw new UntrustedException();
+            } else {
+                throw new ExecutionException(err);
+            }
+        }
+        try {
+            JsonObject parsed = new JsonParser().parse(out).getAsJsonObject();
+            JsonObject evs = parsed.getAsJsonObject("exported");
+            for (Map.Entry<String, JsonElement> e : evs.entrySet()) {
+                if (e.getValue() == null) {
+                    env.remove(e.getKey());
                 } else {
-                    throw new ExecutionException(err);
+                    env.put(e.getKey(), e.getValue().getAsString());
                 }
             }
-
-            JsonObject parsed = new JsonParser().parse(out).getAsJsonObject();
-            return parsed.getAsJsonObject("exported");
-        } catch (IOException e) {
+        } catch (Exception e) {
             throw new ExecutionException(e);
         }
     }

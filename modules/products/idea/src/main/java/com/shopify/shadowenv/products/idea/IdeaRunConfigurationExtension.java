@@ -1,6 +1,5 @@
 package com.shopify.shadowenv.products.idea;
 
-import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.intellij.execution.ExecutionException;
@@ -14,6 +13,7 @@ import com.intellij.openapi.externalSystem.service.execution.ExternalSystemRunCo
 import com.shopify.shadowenv.utils.ReadOnceMap;
 import com.shopify.shadowenv.utils.Shadowenv;
 import org.apache.commons.io.IOUtils;
+import com.shopify.shadowenv.utils.Shadowenv;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -33,12 +33,7 @@ public class IdeaRunConfigurationExtension extends RunConfigurationExtension {
         if (workingDirectory == null) return;
 
         Map<String, String> sourceEnv = getSourceEnv(params);
-        try {
-            Shadowenv.modifyEnv(workingDirectory, sourceEnv);
-        } catch (Exception e) {
-            throw new ExecutionException(e);
-        }
-
+        Shadowenv.evaluate(workingDirectory, sourceEnv);
         params.setEnv(sourceEnv);
 
         // The code below works based on assumptions about internal implementation of
@@ -46,7 +41,6 @@ public class IdeaRunConfigurationExtension extends RunConfigurationExtension {
         // It seems to be the only way to get things working for run configurations such as Gradle, at least for now
         if (configuration instanceof ExternalSystemRunConfiguration) {
             ExternalSystemRunConfiguration ext = (ExternalSystemRunConfiguration) configuration;
-
             ext.getSettings().setEnv(new ReadOnceMap<>(sourceEnv, ext.getSettings().getEnv()));
         }
     }

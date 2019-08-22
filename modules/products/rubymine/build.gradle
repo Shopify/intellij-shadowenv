@@ -9,6 +9,6 @@ intellij {
 }
 
 dependencies {
-    compile project(":envfile-platform")
+    compile project(":envfile-core")
     compile "org.jetbrains:annotations:16.0.3"
 }
