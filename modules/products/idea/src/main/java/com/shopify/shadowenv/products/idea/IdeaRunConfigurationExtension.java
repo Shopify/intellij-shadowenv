@@ -12,6 +12,7 @@ import com.intellij.execution.configurations.RunnerSettings;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.externalSystem.service.execution.ExternalSystemRunConfiguration;
 import com.shopify.shadowenv.utils.ReadOnceMap;
+import com.shopify.shadowenv.utils.Shadowenv;
 import org.apache.commons.io.IOUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -33,14 +34,7 @@ public class IdeaRunConfigurationExtension extends RunConfigurationExtension {
 
         Map<String, String> sourceEnv = getSourceEnv(params);
         try {
-            JsonObject evs = getJsonEnv(workingDirectory);
-            for (Map.Entry<String, JsonElement> entry : evs.entrySet()) {
-                if (entry.getValue() == null) {
-                    sourceEnv.remove(entry.getKey());
-                } else {
-                    sourceEnv.put(entry.getKey(), entry.getValue().getAsString());
-                }
-            }
+            Shadowenv.modifyEnv(workingDirectory, sourceEnv);
         } catch (Exception e) {
             throw new ExecutionException(e);
         }
@@ -54,32 +48,6 @@ public class IdeaRunConfigurationExtension extends RunConfigurationExtension {
             ExternalSystemRunConfiguration ext = (ExternalSystemRunConfiguration) configuration;
 
             ext.getSettings().setEnv(new ReadOnceMap<>(sourceEnv, ext.getSettings().getEnv()));
-        }
-    }
-
-    private JsonObject getJsonEnv(String workingDirectory) throws ExecutionException {
-        try {
-            ProcessBuilder p = new ProcessBuilder("shadowenv", "hook", "--json", "");
-            p.directory(new File(workingDirectory));
-            Process proc = p.start();
-
-            String out = IOUtils.toString(proc.getInputStream(), Charset.defaultCharset());
-            String err = IOUtils.toString(proc.getErrorStream(), Charset.defaultCharset());
-
-            if (!err.isEmpty()) {
-                if (err.contains("untrusted")) {
-                    throw new ExecutionException("untrusted shadowenv program: run shadowenv help trust for more info");
-                } else {
-                    throw new ExecutionException(err);
-                }
-            }
-
-            Logger.getInstance(IdeaRunConfigurationExtension.class).debug("shadowenv output: " + out);
-
-            JsonObject parsed = new JsonParser().parse(out).getAsJsonObject();
-            return parsed.getAsJsonObject("exported");
-        } catch (IOException e) {
-            throw new ExecutionException(e);
         }
     }
 
