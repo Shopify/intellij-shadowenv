@@ -1,6 +1,7 @@
 package com.shopify.shadowenv.utils;
 
 import com.google.gson.JsonObject;
+import com.intellij.execution.ExecutionException;
 import org.junit.Rule;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
@@ -31,7 +32,7 @@ class ShadowenvTest {
     }
 
     @Test
-    void modifyEnv() throws IOException, Shadowenv.ExecutionException, InterruptedException {
+    void modifyEnv() throws ExecutionException, IOException, InterruptedException {
         File file = projectFolder.newFile(".shadowenv.d/test.lisp");
         try (FileWriter fw = new FileWriter(file)) {
             fw.write("(env/set \"FOO\" \"BAR\")\n");
@@ -43,7 +44,7 @@ class ShadowenvTest {
         Map<String, String> env = new HashMap<>();
         env.put("HOME", System.getenv("HOME"));
         env.put("BAZ", "123");
-        Shadowenv.modifyEnv(projectFolder.getRoot().getAbsolutePath(), env);
+        Shadowenv.evaluate(projectFolder.getRoot().getAbsolutePath(), env);
         Assertions.assertEquals(2, env.entrySet().size());
         Assertions.assertEquals("BAR", env.get("FOO"));
         Assertions.assertEquals("123", env.get("BAZ"));

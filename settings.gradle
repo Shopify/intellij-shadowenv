@@ -1,4 +1,4 @@
-rootProject.name = 'envfile'
+rootProject.name = 'shadowenv'
 
 include (
         'modules/core',
@@ -10,5 +10,5 @@ include (
 )
 
 rootProject.children.each {
-    it.name = (it.name.replaceFirst("modules/", "envfile/").replace("/", "-"))
+    it.name = (it.name.replaceFirst("modules/", "shadowenv/").replace("/", "-"))
 }

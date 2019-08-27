@@ -2,6 +2,8 @@ package com.shopify.shadowenv.products.goland;
 
 import com.goide.execution.GoRunConfigurationBase;
 import com.goide.execution.extension.GoRunConfigurationExtension;
+import com.goide.project.GoModuleBuilder;
+import com.goide.sdk.GoSdkUtil;
 import com.intellij.execution.ExecutionException;
 import com.intellij.execution.configurations.GeneralCommandLine;
 import com.intellij.execution.configurations.RunnerSettings;
@@ -15,9 +17,7 @@ import java.util.Map;
 public class GolandRunConfigurationExtension extends GoRunConfigurationExtension {
     @Override
     protected void patchCommandLine(@NotNull GoRunConfigurationBase goRunConfigurationBase, @Nullable RunnerSettings runnerSettings, @NotNull GeneralCommandLine generalCommandLine, @NotNull String s) throws ExecutionException {
-        Map<String, String> currentEnv = generalCommandLine.getEnvironment();
-        Map<String, String> newEnv = Shadowenv.evaluate(goRunConfigurationBase.getWorkingDirectory());
-        currentEnv.putAll(newEnv);
+        Shadowenv.evaluate(goRunConfigurationBase.getWorkingDirectory(), generalCommandLine.getEnvironment());
     }
 
 

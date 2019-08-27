@@ -1,5 +1,0 @@
-<idea-plugin version="2">
-    <extensions defaultExtensionNs="org.jetbrains.plugins.ruby">
-        <runConfigurationExtension implementation="com.shopify.shadowenv.products.rubymine.RubyMineRunConfigurationExtension" id="envfileRubyMine"/>
-    </extensions>
-</idea-plugin>

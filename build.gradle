@@ -31,12 +31,13 @@ intellij {
     updateSinceUntilBuild false
     downloadSources true
     plugins = ['java']
+    alternativeIdePath "/Users/tanner/Library/Application Support/JetBrains/Toolbox/apps/RubyMine/ch-0/192.6262.57/RubyMine.app/"
 }
 
 dependencies {
-    compile project(":envfile-products-idea")
-    compile project(":envfile-products-pycharm")
-    compile project(":envfile-products-rubymine")
-    compile project(":envfile-products-goland")
+    compile project(":shadowenv-products-idea")
+    compile project(":shadowenv-products-pycharm")
+    compile project(":shadowenv-products-rubymine")
+    compile project(":shadowenv-products-goland")
 }
 
