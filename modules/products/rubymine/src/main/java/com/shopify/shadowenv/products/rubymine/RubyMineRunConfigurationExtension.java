@@ -68,7 +68,7 @@ public class RubyMineRunConfigurationExtension extends RubyRunConfigurationExten
         env.clear();
         env.putAll(m);
 
-        var curName = configuration.getSdk().getName();
+        String curName = configuration.getSdk().getName();
         String rv = m.get("RUBY_VERSION");
         if (curName.contains(rv)) {
             return;
@@ -89,7 +89,7 @@ public class RubyMineRunConfigurationExtension extends RubyRunConfigurationExten
     @Nullable
     private Sdk findSdk(String name) {
         Sdk sdk = null;
-        for (var s : ProjectJdkTable.getInstance().getAllJdks()) {
+        for (Sdk s : ProjectJdkTable.getInstance().getAllJdks()) {
             if (!s.getName().contains(name)) {
                 continue;
             }
