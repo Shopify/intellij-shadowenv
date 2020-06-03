@@ -4,5 +4,9 @@
     </extensions>
     <extensions defaultExtensionNs="com.intellij">
         <runConfigurationBeforeRunProviderDelegate implementation="com.shopify.shadowenv.products.rubymine.RubyMineRunconfigurationBeforeRunProviderDelegate" id="envfileRubyMineDelegate"/>
+        <backgroundPostStartupActivity implementation="com.shopify.shadowenv.products.rubymine.SetSdkOnLaunch" id="setSdkOnLaunchRubyMine" />
+    </extensions>
+    <extensions defaultExtensionNs="com.intellij.backgroundPostStartupActivity">
+        <
     </extensions>
 </idea-plugin>
