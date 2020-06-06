@@ -41,7 +41,7 @@
 
   <depends optional="true" config-file="shadowenv-idea.xml">com.intellij.modules.lang</depends>
   <depends optional="true" config-file="shadowenv-pycharm.xml">com.intellij.modules.python</depends>
-  <depends optional="true" config-file="shadowenv-rubymine.xml">com.intellij.modules.ruby</depends>
+  <depends optional="false" config-file="shadowenv-rubymine.xml">com.intellij.modules.ruby</depends>
   <depends optional="true" config-file="shadowenv-goland.xml">org.jetbrains.plugins.go</depends>
 
 </idea-plugin>

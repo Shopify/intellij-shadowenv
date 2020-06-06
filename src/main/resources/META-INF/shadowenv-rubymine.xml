@@ -1,12 +1,9 @@
 <idea-plugin>
-    <extensions defaultExtensionNs="org.jetbrains.plugins.ruby">
-        <runConfigurationExtension implementation="com.shopify.shadowenv.products.rubymine.RubyMineRunConfigurationExtension" id="envfileRubyMine"/>
-    </extensions>
+<!--    <extensions defaultExtensionNs="org.jetbrains.plugins.ruby">-->
+<!--        <runConfigurationExtension implementation="com.shopify.shadowenv.products.rubymine.RubyMineRunConfigurationExtension" id="envfileRubyMine"/>-->
+<!--    </extensions>-->
     <extensions defaultExtensionNs="com.intellij">
-        <runConfigurationBeforeRunProviderDelegate implementation="com.shopify.shadowenv.products.rubymine.RubyMineRunconfigurationBeforeRunProviderDelegate" id="envfileRubyMineDelegate"/>
-        <backgroundPostStartupActivity implementation="com.shopify.shadowenv.products.rubymine.SetSdkOnLaunch" id="setSdkOnLaunchRubyMine" />
-    </extensions>
-    <extensions defaultExtensionNs="com.intellij.backgroundPostStartupActivity">
-        <
+<!--        <runConfigurationBeforeRunProviderDelegate implementation="com.shopify.shadowenv.products.rubymine.RubyMineRunconfigurationBeforeRunProviderDelegate" id="envfileRubyMineDelegate"/>-->
+        <postStartupActivity implementation="com.shopify.shadowenv.products.rubymine.SetSdkOnLaunch" id="setSdkOnLaunchRubyMine" />
     </extensions>
 </idea-plugin>

@@ -26,12 +26,12 @@ allprojects {
 intellij {
     version jetbrains.version
     pluginName "shadowenv"
-    type "IC"
+    type "RM"
     sameSinceUntilBuild false
     updateSinceUntilBuild false
     downloadSources true
-    plugins = ['java']
-    alternativeIdePath "/Users/tanner/Library/Application Support/JetBrains/Toolbox/apps/RubyMine/ch-0/192.6262.57/RubyMine.app/"
+//    plugins = ['ruby']
+    alternativeIdePath "/Applications/RubyMine.app/"
 }
 
 dependencies {

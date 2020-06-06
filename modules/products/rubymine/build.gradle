@@ -4,11 +4,18 @@ plugins {
 }
 
 intellij {
-    version jetbrains.version
-    plugins jetbrains.rubymine
+//    version jetbrains.version
+//    plugins jetbrains.rubymine
+    type 'RM'
+    localPath '/Applications/RubyMine.app'
+}
+
+runIde {
+    ideaDirectory = '/Applications/RubyMine.app/Contents'
 }
 
 dependencies {
     compile project(":shadowenv-core")
     compile "org.jetbrains:annotations:16.0.3"
+    compile files("/Applications/RubyMine.app/Contents/plugins/ruby/lib/ruby.jar")
 }
