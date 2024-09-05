@@ -11,9 +11,19 @@ to set the SDK for the current Run Configuration to be one that matches that ver
 
 ## Installation
 
-Installation is simple, simply install the plugin and it will automatically
-start working. To disable the plugin, disable it from the installed plugins menu.
+To install, download the latest version of the plugin (zip file) from the [Releases](https://github.com/boryspierov/shadowenv/releases) page and install it in JetBrains IDE. On the plugins page, click the gear icon and select "Install plugin from disk".
 
+![Install from disk](docs/install-from-disk.png)
+
+You will also need to install the [EnvFile plugin](https://github.com/ashald/EnvFile).This is available in the JetBrains plugin repository.
+
+To use the plugin, you can use variables from your shadowenv file in your run configuration. The syntax looks like `${VARIABLE_NAME}`. See an example here: 
+
+![intellij-shadow-env](docs/intellij-variable-example.png)
+
+You will need to enable the envfile plugin as well. See the example below:
+
+![intellij-shadow-env](docs/intellij-envfile-example.png)
 
 ## Building
 
