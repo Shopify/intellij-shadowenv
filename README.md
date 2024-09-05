@@ -15,7 +15,7 @@ To install, download the latest version of the plugin (zip file) from the [Relea
 
 ![Install from disk](docs/install-from-disk.png)
 
-You will also need to install the [EnvFile plugin](https://github.com/ashald/EnvFile).This is available in the JetBrains plugin repository.
+You will also need to install the [EnvFile plugin](https://github.com/ashald/EnvFile). This is available in the JetBrains plugin repository.
 
 To use the plugin, you can use variables from your shadowenv file in your run configuration. The syntax looks like `${VARIABLE_NAME}`. See an example here: 
 
