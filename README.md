@@ -11,7 +11,7 @@ to set the SDK for the current Run Configuration to be one that matches that ver
 
 ## Installation
 
-To install, download the latest version of the plugin (zip file) from the [Releases](https://github.com/Shopify/shadowenv/releases) page and install it in JetBrains IDE. On the plugins page, click the gear icon and select "Install plugin from disk".
+To install, download the latest version of the plugin (zip file) from the [Releases](https://github.com/Shopify/intellij-shadowenv/releases) page and install it in JetBrains IDE. On the plugins page, click the gear icon and select "Install plugin from disk".
 
 ![Install from disk](docs/install-from-disk.png)
 
