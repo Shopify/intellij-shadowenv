@@ -29,7 +29,7 @@ public class Shadowenv {
                 withExePath("shadowenv").
                 withWorkDirectory(pwd);
 
-        gc.addParameters("hook", "--json", "");
+        gc.addParameters("hook", "--json");
         Process proc = gc.createProcess();
         String out, err;
         try {
