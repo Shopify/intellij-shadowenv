@@ -6,7 +6,6 @@ import com.intellij.execution.configurations.GeneralCommandLine;
 import com.intellij.execution.configurations.JavaParameters;
 import com.intellij.execution.configurations.RunConfigurationBase;
 import com.intellij.execution.configurations.RunnerSettings;
-import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.externalSystem.service.execution.ExternalSystemRunConfiguration;
 import com.shopify.shadowenv.utils.ReadOnceMap;
 import com.shopify.shadowenv.utils.Shadowenv;
@@ -27,7 +26,6 @@ public class IdeaRunConfigurationExtension extends RunConfigurationExtension {
 
         Map<String, String> sourceEnv = getSourceEnv(params);
         Shadowenv.evaluate(workingDirectory, sourceEnv);
-        sourceEnv.forEach((k, v) -> Logger.getInstance(IdeaRunConfigurationExtension.class).warn(k + ": " + v));
         params.setEnv(sourceEnv);
 
         // The code below works based on assumptions about internal implementation of
