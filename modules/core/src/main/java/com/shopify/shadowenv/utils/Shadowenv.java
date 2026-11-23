@@ -49,7 +49,9 @@ public class Shadowenv {
             JsonObject parsed = new JsonParser().parse(out).getAsJsonObject();
             JsonObject evs = parsed.getAsJsonObject("exported");
             for (Map.Entry<String, JsonElement> e : evs.entrySet()) {
-                if (e.getValue() == null) {
+                // shadowenv reports a variable it unsets as JSON null, which Gson
+                // parses as JsonNull, not as a Java null.
+                if (e.getValue() == null || e.getValue().isJsonNull()) {
                     env.remove(e.getKey());
                 } else {
                     // Never log the value: shadowenv exports secrets (tokens, keys) into

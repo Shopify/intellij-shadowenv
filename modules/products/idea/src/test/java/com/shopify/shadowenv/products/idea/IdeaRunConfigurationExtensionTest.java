@@ -20,6 +20,7 @@ import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 public class IdeaRunConfigurationExtensionTest {
     private static final String SECRET = "supersecret-value-for-test";
@@ -38,6 +39,7 @@ public class IdeaRunConfigurationExtensionTest {
         File shadowenvDir = projectFolder.newFolder(".shadowenv.d");
         try (FileWriter fw = new FileWriter(new File(shadowenvDir, "test.lisp"))) {
             fw.write("(env/set \"FOO\" \"BAR\")\n");
+            fw.write("(env/set \"DROP_ME\" ())\n");
         }
         String[] envp = {"HOME=" + System.getenv("HOME")};
         Runtime.getRuntime().exec("shadowenv trust", envp, projectFolder.getRoot()).waitFor();
@@ -70,6 +72,23 @@ public class IdeaRunConfigurationExtensionTest {
                 assertFalse("IDE log contains a run-configuration secret: " + record, record.contains(SECRET));
             }
         }
+    }
+
+    @Test
+    public void removesVariablesThatShadowenvUnsets() throws Exception {
+        Map<String, String> env = new HashMap<>();
+        env.put("DROP_ME", "inherited");
+
+        JavaParameters params = new JavaParameters();
+        params.setWorkingDirectory(projectFolder.getRoot().getAbsolutePath());
+        params.setPassParentEnvs(false);
+        params.setEnv(env);
+
+        // shadowenv reports an unset variable as null in `hook --json`.
+        new IdeaRunConfigurationExtension().<RunConfigurationBase>updateJavaParameters(null, params, null);
+
+        assertFalse(params.getEnv().containsKey("DROP_ME"));
+        assertTrue(params.getEnv().containsKey("FOO"));
     }
 
     private static final class CapturingLogger extends Logger {
