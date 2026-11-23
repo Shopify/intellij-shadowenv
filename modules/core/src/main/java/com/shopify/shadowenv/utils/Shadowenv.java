@@ -11,7 +11,6 @@ import com.google.gson.JsonParser;
 import com.intellij.execution.configurations.GeneralCommandLine;
 import com.intellij.execution.configurations.RunConfigurationBase;
 import com.intellij.execution.configurations.SimpleProgramParameters;
-import com.intellij.openapi.diagnostic.Logger;
 import org.apache.commons.io.IOUtils;
 import org.jetbrains.annotations.NotNull;
 
@@ -53,7 +52,9 @@ public class Shadowenv {
                 if (e.getValue() == null) {
                     env.remove(e.getKey());
                 } else {
-                    Logger.getInstance(Shadowenv.class).warn(e.getKey() + ": " + e.getValue());
+                    // Never log the value: shadowenv exports secrets (tokens, keys) into
+                    // the run configuration's environment, and IDE logs are kept on disk
+                    // and attached to bug reports.
                     env.put(e.getKey(), e.getValue().getAsString());
                 }
             }
