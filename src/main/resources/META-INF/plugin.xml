@@ -1,7 +1,7 @@
 <idea-plugin>
   <id>com.shopify.shadowenv</id>
   <name>shadowenv</name>
-  <version>0.0.1</version>
+  <version>0.0.3</version>
   <vendor email="shopify@shopify.com">Shopify</vendor>
 
   <description><![CDATA[
@@ -26,7 +26,16 @@
     ]]></description>
 
   <change-notes><![CDATA[
-      <b>Added</b>:
+      <b>0.0.3</b>:
+      <ul>
+        <li>Security: environment variable values are no longer written to the IDE log.</li>
+        <li>Fixed: variables that shadowenv unsets are removed, instead of failing the run configuration.</li>
+      </ul>
+      <b>0.0.2</b>:
+      <ul>
+        <li>Fixed: no empty argument is passed to <code>shadowenv hook</code>.</li>
+      </ul>
+      <b>0.0.1</b>:
       <ul>
         <li>Initial release of shadowenv with support for env var settings and Ruby SDK updating. Also supports NVM</li>
       </ul>
