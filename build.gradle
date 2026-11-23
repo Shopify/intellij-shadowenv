@@ -1,17 +1,21 @@
 plugins {
     id "java"
     id "idea"
-    id "org.jetbrains.intellij" version "0.4.10"
+    id "org.jetbrains.intellij" version "0.7.3"
 }
 
-sourceCompatibility = 1.8
 
 group "com.shopify.dev"
 
 allprojects {
+    // 0.0.1 shipped Java 11 bytecode, and the RubyMine module uses `var`.
+    plugins.withId("java") {
+        sourceCompatibility = 11
+        targetCompatibility = 11
+    }
+
     repositories {
         mavenCentral()
-        maven { url 'http://dl.bintray.com/jetbrains/intellij-plugin-service' }
     }
     project.version = '0.0.1'
 
@@ -31,7 +35,6 @@ intellij {
     updateSinceUntilBuild false
     downloadSources true
     plugins = ['java']
-    alternativeIdePath "/Users/tanner/Library/Application Support/JetBrains/Toolbox/apps/RubyMine/ch-0/192.6262.57/RubyMine.app/"
 }
 
 dependencies {
@@ -41,3 +44,12 @@ dependencies {
     compile project(":shadowenv-products-goland")
 }
 
+
+// The plugin has no settings pages, so the searchable-options index is empty (the
+// 0.0.1 zip shipped an empty searchableOptions jar). Building it boots a headless
+// 2019.2 IDE, which cannot start on Apple Silicon.
+allprojects {
+    tasks.matching { it.name == "buildSearchableOptions" }.configureEach {
+        enabled = false
+    }
+}
